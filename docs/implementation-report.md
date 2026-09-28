@@ -34,8 +34,8 @@
 | Docker / Compose / PostgreSQL | Docker Desktop 4.93.0.240920（官方 SHA-256 与 Authenticode 签名校验通过）、Docker CLI / Engine 29.8.1、Compose v5.5.1、WSL 2.7.14.0。`docker compose config --quiet` 通过；`docker compose up --build --detach` 完成镜像构建并在构建容器中通过 4 项集成测试。真实启动中发现 PostgreSQL 18 要求把卷挂载到 `/var/lib/postgresql`，已修正 Compose；数据库健康检查通过，Flyway 成功迁移 1 次。Windows 排除了 8080（7998–8097 为系统排除端口），因此将宿主机端口设为可配置 `APP_PORT`，本机用 18080 运行；应用容器和数据库容器均正常启动。由于原用户 AppData 开启 EFS，本机 Docker Desktop 使用独立的未加密目录和进程级环境变量启动，未修改原用户 Docker 配置或清理既有数据。 |
 | 容器内 HTTP 工单实测与持久化 | `/health` 返回 `UP`，登录页返回 200。以演示客户、客服、维修人员分别登录，使用虚构测试资料完成提交、客户留言、客服分派、维修状态更新与留言、客户确认关闭；状态历史包含提交、分派、维修中、已解决、已完成。客服详情页不含虚构联系姓名、电话或地址；工单所有者与已分派维修人员可查看联系方式。重启应用容器后重新登录仍可读取同一工单、评论和历史；数据库核对为 1 张工单、2 条评论、5 条状态历史，Flyway 成功记录 1 次。 |
 | HTTP 安全检查 | 登录页响应包含 CSP、`X-Frame-Options: DENY` 和 Referrer-Policy；缺少 CSRF 令牌的登录 POST 返回 403。角色与工单访问控制、联系方式脱敏亦通过上述真实 HTTP 流程验证。 |
-| GitHub Actions / CodeQL 远端运行 | 已配置 `Build and test`、`CodeQL security analysis` 与 Dependabot 的 Maven / Actions 检查。公开仓库此前的对应运行已成功；本轮 `de7e19f` 推送后，Build 和 CodeQL 新运行已启动，记录时仍在执行中，不把它们写作已通过。 |
-| GitHub 仓库与推送 | GitHub 元信息确认仓库为公开、默认分支为 `main`。本轮 Compose 修复和验证报告已通过普通非强制推送同步；该次提交为 `de7e19f`。 |
+| GitHub Actions / CodeQL 远端运行 | 已配置 `Build and test`、`CodeQL security analysis` 与 Dependabot 的 Maven / Actions 检查。GitHub Actions API 确认实现与容器验证提交 `42093c0` 的 `Build and test`、`CodeQL security analysis` 均以 `success` 结束。 |
+| GitHub 仓库与推送 | GitHub 元信息确认仓库为公开、默认分支为 `main`。本轮 Compose 修复和验证报告已通过普通非强制推送同步；实现及容器验证提交为 `42093c0`。 |
 
 测试使用 H2 内存库隔离；本机烟测使用位于临时目录的文件型 H2 与虚构资料，验证结束后移除。构建生成物位于忽略的 `target/` 下，不加入仓库。
 
