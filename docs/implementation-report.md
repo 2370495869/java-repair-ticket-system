@@ -33,6 +33,7 @@
 | 权限与隐私用例 | 通过；检查 CSRF、BCrypt 哈希、客户越权读取、错误角色访问客服分派、完整状态流转、评论 / 历史和客服 / 维修人员联系方式差异 |
 | Docker Compose 启动 | 未执行：本机没有 Docker CLI / Compose。Compose 文件已加入仓库，但 PostgreSQL 容器启动和 PostgreSQL 实际迁移尚未在本机验证 |
 | GitHub Actions / CodeQL 远端运行 | 配置已加入；须在仓库推送后由 GitHub Actions 执行，当前没有远端运行结果 |
+| GitHub 仓库与推送 | 未完成：本机 Git 凭据管理器没有可用的非交互 GitHub 凭据，目标仓库尚未创建；当前没有 remote，也未尝试推送 |
 
 测试使用 H2 内存库隔离；本机烟测使用位于临时目录的文件型 H2 与虚构资料，验证结束后移除。构建生成物位于忽略的 `target/` 下，不加入仓库。
 
@@ -40,7 +41,7 @@
 
 - 使用 BCrypt cost 12；服务端表单校验；Spring Security 默认 CSRF；Session Cookie 配置 HttpOnly、SameSite；启用 CSP、Referrer-Policy 和禁止 iframe 嵌入。
 - 对角色入口与工单拥有权 / 分派关系在控制器和服务层实施限制；Hibernate 参数化持久化；工单版本字段支持乐观并发控制。
-- `.gitignore` 与 `.dockerignore` 排除 `.env`、数据库文件、上传目录、日志和构建输出；仓库仅含密码字段为空的 `.env.example`。同步前会另行检查最终暂存内容。
+- `.gitignore` 与 `.dockerignore` 排除 `.env`、数据库文件、上传目录、日志和构建输出；仓库仅含密码字段为空的 `.env.example`。已检查最终暂存的 70 个文件，没有令牌 / 私钥特征、所检索的个人标识、`.env`、数据库或构建输出。
 - CodeQL 与 Dependabot 工作流已配置，但尚未收到 GitHub 远端扫描结果；本次没有声称通过外部依赖漏洞扫描。
 
 ## 当前限制
