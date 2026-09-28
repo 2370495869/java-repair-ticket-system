@@ -31,7 +31,7 @@
 | Flyway + H2 集成测试 | 通过；V1 成功执行，Hibernate schema validation 成功 |
 | 本机 Web 烟测 | 通过；`/login` 返回 200、`/health` 返回 `UP`；经真实 HTTP 表单注册客户和提交工单，重启服务后重新登录仍能看到同一工单号，确认文件型 H2 数据持久化 |
 | 权限与隐私用例 | 通过；检查 CSRF、BCrypt 哈希、客户越权读取、错误角色访问客服分派、完整状态流转、评论 / 历史和客服 / 维修人员联系方式差异 |
-| Docker Compose 启动 | 未执行：本机没有 Docker CLI / Compose。Compose 文件已加入仓库，但 PostgreSQL 容器启动和 PostgreSQL 实际迁移尚未在本机验证 |
+| Docker Compose 启动 | 未完成：本机已安装 Docker Desktop 4.92.0 单用户版（官方 SHA-256 与签名校验通过），Docker CLI 29.8.0、Compose v5.5.1 可用；启动 Docker Desktop 后仍无 daemon 管道。Windows 当前没有安装 WSL；启用所需的 WSL 2 需要管理员权限，而当前会话不是管理员。因此尚未启动 Compose、PostgreSQL 容器或容器内的 Flyway 迁移，需在启用 WSL 2 后补测 |
 | GitHub Actions / CodeQL 远端运行 | 已在公开仓库运行；`Build and test`、`CodeQL security analysis` 以及 Dependabot 的 Maven / Actions 更新检查均完成，结论为 success |
 | GitHub 仓库与推送 | 已完成；创建公开仓库 [java-repair-ticket-system](https://github.com/2370495869/java-repair-ticket-system)，`main` 已推送并跟踪 `origin/main`；初始发布提交为 `11ef79dd0e802d96d8dd116cf8ce40b59f93a17e` |
 
