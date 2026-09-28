@@ -94,7 +94,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-访问 <http://127.0.0.1:8080>。端口只绑定回环地址；PostgreSQL 数据保存在 Compose 的 `postgres-data` volume 中。停止服务使用 `docker compose down`；保留数据库 volume 可再次启动后继续演示。删除 volume 会永久删除其数据。
+访问 <http://127.0.0.1:8080>。默认宿主机端口可在 `.env` 中通过 `APP_PORT` 配置；若 8080 已被占用或系统保留，可改为 `APP_PORT=18080` 并访问 <http://127.0.0.1:18080>。端口只绑定回环地址；PostgreSQL 数据保存在 Compose 的 `postgres-data` volume 中。停止服务使用 `docker compose down`；保留数据库 volume 可再次启动后继续演示。删除 volume 会永久删除其数据。
 
 反向代理到 HTTPS 后，将 `SESSION_COOKIE_SECURE=true`；本仓库未配置公网 TLS、域名或托管环境。
 
