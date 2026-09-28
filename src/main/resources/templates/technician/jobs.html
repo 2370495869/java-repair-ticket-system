@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>维修工作台 · 修伴</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="app-page">
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="page-shell">
+  <section class="role-hero technician-hero">
+    <div><span class="eyebrow eyebrow-dark"><span class="eyebrow-dot"></span> FIELD SERVICE</span><h1>今天的维修安排</h1><p>只显示分派给你的工单。每次进度更新都会留在状态记录中。</p></div>
+    <div class="tech-avatar" aria-hidden="true">修</div>
+  </section>
+  <div class="alert alert-success" th:if="${notice}" th:text="${notice}"></div>
+  <section class="stat-grid stat-grid-two">
+    <article class="stat-card"><span class="stat-label">待处理 / 进行中</span><strong th:text="${activeCount}">0</strong><span class="stat-foot">你负责的开放工单</span><span class="stat-icon icon-indigo">◷</span></article>
+    <article class="stat-card"><span class="stat-label">待客户确认</span><strong th:text="${resolvedCount}">0</strong><span class="stat-foot">已标记为已解决</span><span class="stat-icon icon-green">✓</span></article>
+  </section>
+  <section class="content-card">
+    <div class="section-heading"><div><span class="section-kicker">MY ASSIGNMENTS</span><h2>我的工单</h2><p>客户电话和上门地址仅对负责这张工单的维修人员开放。</p></div><span class="count-chip" th:text="${#lists.size(tickets) + ' 张工单'}">0 张工单</span></div>
+    <div class="table-wrap" th:if="${!#lists.isEmpty(tickets)}">
+      <table class="data-table">
+        <thead><tr><th>工单</th><th>类型</th><th>联系人</th><th>状态</th><th>更新时间</th><th></th></tr></thead>
+        <tbody>
+        <tr th:each="ticket : ${tickets}">
+          <td><a class="ticket-link" th:href="@{/tickets/{id}(id=${ticket.ticketNumber})}" th:text="${ticket.title}">报修事项</a><span class="table-sub" th:text="${ticket.ticketNumber}">RT-1234567890</span></td>
+          <td th:text="${ticket.category}">水电维修</td>
+          <td><span th:text="${ticket.contactName}">联系人</span><span class="table-sub" th:text="${ticket.contactPhone}">联系电话</span></td>
+          <td><span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(ticket.status.name())}" th:text="${ticket.status.label}">已分派</span></td>
+          <td class="muted" th:text="${ticket.updatedAt}">2026-09-28 09:30</td>
+          <td><a class="row-action" th:href="@{/tickets/{id}(id=${ticket.ticketNumber})}">处理 ↗</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="empty-state" th:if="${#lists.isEmpty(tickets)}"><div class="empty-illustration" aria-hidden="true">⌁</div><h3>还没有分派的工单</h3><p>客服完成分派后，工单会出现在你的工作台。</p></div>
+  </section>
+</main>
+</body>
+</html>

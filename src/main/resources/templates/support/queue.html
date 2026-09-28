@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>客服队列 · 修伴</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="app-page">
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="page-shell">
+  <section class="role-hero support-hero">
+    <div><span class="eyebrow eyebrow-dark"><span class="eyebrow-dot"></span> SERVICE DESK</span><h1>客服工作台</h1><p>把每一条报修安排妥当，让客户知道接下来会发生什么。</p></div>
+    <div class="hero-side-note"><span class="hero-side-mark">✦</span><span>工单联系信息<br><b>已按规则脱敏</b></span></div>
+  </section>
+  <div class="alert alert-success" th:if="${notice}" th:text="${notice}"></div>
+  <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+  <section class="stat-grid stat-grid-three">
+    <article class="stat-card"><span class="stat-label">待分派</span><strong th:text="${newCount}">0</strong><span class="stat-foot">等待安排维修人员</span><span class="stat-icon icon-amber">↗</span></article>
+    <article class="stat-card"><span class="stat-label">处理中</span><strong th:text="${activeCount}">0</strong><span class="stat-foot">尚未完结</span><span class="stat-icon icon-indigo">◷</span></article>
+    <article class="stat-card"><span class="stat-label">待客户确认</span><strong th:text="${resolvedCount}">0</strong><span class="stat-foot">维修人员已标记解决</span><span class="stat-icon icon-green">✓</span></article>
+  </section>
+  <section class="content-card">
+    <div class="section-heading"><div><span class="section-kicker">ALL REQUESTS</span><h2>工单队列</h2><p>客户联系方式默认脱敏，打开详情可查看必要的服务信息。</p></div><span class="count-chip" th:text="${#lists.size(tickets) + ' 张工单'}">0 张工单</span></div>
+    <div class="table-wrap" th:if="${!#lists.isEmpty(tickets)}">
+      <table class="data-table support-table">
+        <thead><tr><th>工单</th><th>客户</th><th>状态</th><th>维修人员</th><th>更新时间</th><th>操作</th></tr></thead>
+        <tbody>
+        <tr th:each="ticket : ${tickets}">
+          <td><a class="ticket-link" th:href="@{/tickets/{id}(id=${ticket.ticketNumber})}" th:text="${ticket.title}">报修事项</a><span class="table-sub" th:text="${ticket.ticketNumber + ' · ' + ticket.category}">RT-123 · 水电维修</span></td>
+          <td><span th:text="${ticket.customerDisplay}">客户</span><span class="table-sub" th:text="${ticket.contactPhone}">138****8000</span></td>
+          <td><span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(ticket.status.name())}" th:text="${ticket.status.label}">待分派</span></td>
+          <td th:text="${ticket.technicianName}">待分派</td>
+          <td class="muted" th:text="${ticket.updatedAt}">2026-09-28 09:30</td>
+          <td>
+            <form th:if="${ticket.status.name() == 'SUBMITTED' and !#lists.isEmpty(technicians)}" class="assign-form" th:action="@{/support/tickets/{id}/assign(id=${ticket.ticketNumber})}" method="post">
+              <select name="technicianId" aria-label="选择维修人员" required><option value="">选择师傅</option><option th:each="technician : ${technicians}" th:value="${technician.id}" th:text="${technician.fullName}"></option></select>
+              <button class="button button-primary button-small" type="submit">分派</button>
+            </form>
+            <a class="row-action" th:href="@{/tickets/{id}(id=${ticket.ticketNumber})}">详情 ↗</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="empty-state" th:if="${#lists.isEmpty(tickets)}"><div class="empty-illustration" aria-hidden="true">✓</div><h3>队列暂时为空</h3><p>客户提交报修后，工单会出现在这里。</p></div>
+  </section>
+  <p class="page-note">客服队列显示脱敏的联系信息。需要处理具体安排时，请在工单详情中查看。</p>
+</main>
+</body>
+</html>

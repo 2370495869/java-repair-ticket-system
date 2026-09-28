@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>创建账号 · 修伴报修工单</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="auth-page">
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="auth-shell register-shell">
+  <section class="auth-story register-story">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR HOME, WELL CARED FOR</div>
+    <h1>报修之后，<br><span>心里有数。</span></h1>
+    <p class="story-copy">创建账号后，你可以查看自己的所有工单，与客服和维修人员直接沟通。</p>
+    <div class="privacy-card"><span class="privacy-icon">⌂</span><div><b>你的联系信息会被妥善保护</b><p>只向工单相关人员显示必要信息。其他客户无法查看你的工单。</p></div></div>
+  </section>
+  <section class="auth-form-wrap">
+    <div class="auth-form-card">
+      <div class="form-kicker">新客户</div><h2>创建一个账号</h2>
+      <p class="muted">只需填写基本资料，稍后也可以开始报修。</p>
+      <form th:action="@{/register}" th:object="${form}" method="post" class="stack-form">
+        <label for="fullName">怎么称呼你</label>
+        <input id="fullName" th:field="*{fullName}" autocomplete="name" maxlength="60" required placeholder="请输入姓名">
+        <small class="field-error" th:errors="*{fullName}"></small>
+        <label for="email">邮箱</label>
+        <input id="email" th:field="*{email}" type="email" autocomplete="email" maxlength="190" required placeholder="name@example.com">
+        <small class="field-error" th:errors="*{email}"></small>
+        <label for="phone">手机号</label>
+        <input id="phone" th:field="*{phone}" type="tel" inputmode="numeric" autocomplete="tel" maxlength="11" required placeholder="11 位手机号">
+        <small class="field-error" th:errors="*{phone}"></small>
+        <label for="password">设置密码 <span class="label-note">至少 12 位</span></label>
+        <input id="password" th:field="*{password}" type="password" autocomplete="new-password" minlength="12" maxlength="72" required>
+        <small class="field-error" th:errors="*{password}"></small>
+        <label for="passwordConfirmation">再次输入密码</label>
+        <input id="passwordConfirmation" th:field="*{passwordConfirmation}" type="password" autocomplete="new-password" required>
+        <small class="field-error" th:errors="*{passwordConfirmation}"></small>
+        <button class="button button-primary button-wide" type="submit">创建客户账号 <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="auth-switch">已经注册？ <a th:href="@{/login}">返回登录</a></p>
+    </div>
+    <div class="auth-caption">注册即代表你同意合理使用本地演示系统。</div>
+  </section>
+</main>
+</body>
+</html>

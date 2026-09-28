@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${ticket.title + ' · 修伴工单'}">工单详情 · 修伴</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="app-page">
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="page-shell detail-shell">
+  <a class="back-link" th:if="${currentUser.role.name() == 'CUSTOMER'}" th:href="@{/customer/dashboard}">← 返回我的工单</a>
+  <a class="back-link" th:if="${currentUser.role.name() == 'SUPPORT'}" th:href="@{/support/queue}">← 返回客服队列</a>
+  <a class="back-link" th:if="${currentUser.role.name() == 'TECHNICIAN'}" th:href="@{/technician/jobs}">← 返回维修工作台</a>
+  <div class="alert alert-success" th:if="${notice}" th:text="${notice}"></div>
+  <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <section class="ticket-title-row">
+    <div><span class="section-kicker" th:text="${ticket.ticketNumber}">RT-1234567890</span><h1 th:text="${ticket.title}">工单标题</h1><p th:text="${ticket.category + ' · 创建于 ' + ticket.createdAt}">水电维修 · 创建于 2026-09-28 09:30</p></div>
+    <span class="status-pill status-large" th:classappend="${' status-' + #strings.toLowerCase(ticket.status.name())}" th:text="${ticket.status.label}">维修中</span>
+  </section>
+
+  <div class="detail-grid">
+    <div class="detail-main">
+      <section class="content-card ticket-description-card">
+        <div class="section-heading compact-heading"><div><span class="section-kicker">REQUEST DETAILS</span><h2>问题描述</h2></div><span class="subtle-tag">最近更新 <span th:text="${ticket.updatedAt}">2026-09-28 09:30</span></span></div>
+        <p class="description-text" th:text="${ticket.description}">工单描述</p>
+        <div class="contact-grid">
+          <div class="contact-item"><span>现场联系人</span><b th:text="${ticket.contactName}">客户</b></div>
+          <div class="contact-item"><span>联系电话</span><b th:text="${ticket.contactPhone}">已隐藏</b></div>
+          <div class="contact-item contact-address"><span>上门地址</span><b th:text="${ticket.serviceAddress}">具体地址已隐藏</b></div>
+          <div class="contact-item"><span>负责维修人员</span><b th:text="${ticket.technicianName}">待分派</b></div>
+        </div>
+        <p class="privacy-note" th:if="${currentUser.role.name() == 'SUPPORT'}"><span aria-hidden="true">◈</span> 客服视图对客户姓名、电话和详细地址进行了脱敏。</p>
+      </section>
+
+      <section class="content-card timeline-card">
+        <div class="section-heading compact-heading"><div><span class="section-kicker">STATUS HISTORY</span><h2>状态记录</h2><p>每次工单变化都会记录操作者和时间。</p></div></div>
+        <ol class="timeline">
+          <li th:each="change,iter : ${detail.history}" th:classappend="${iter.last ? ' timeline-last' : ''}">
+            <span class="timeline-dot" aria-hidden="true"></span><div class="timeline-content"><div class="timeline-title"><b th:text="${change.toLabel}">待分派</b><span th:text="${change.changedAt}">2026-09-28 09:30</span></div><p><span th:text="${change.actorName}">客户</span><span> · </span><span th:text="${change.note}">客户提交工单</span></p></div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="content-card comments-card">
+        <div class="section-heading compact-heading"><div><span class="section-kicker">CONVERSATION</span><h2>工单留言 <span class="comment-count" th:text="${#lists.size(detail.comments)}">0</span></h2><p>客户、客服和负责维修人员可以在这里沟通。</p></div></div>
+        <div class="comment-list" th:if="${!#lists.isEmpty(detail.comments)}">
+          <article class="comment" th:each="comment : ${detail.comments}">
+            <div class="comment-avatar" th:classappend="${' avatar-' + #strings.toLowerCase(comment.authorRole.name())}" th:text="${#strings.substring(comment.authorName,0,1)}">客</div>
+            <div class="comment-body"><div class="comment-meta"><b th:text="${comment.authorName}">客户</b><span class="role-mini" th:text="${comment.authorRole.label}">客户</span><time th:text="${comment.createdAt}">2026-09-28 09:30</time></div><p th:text="${comment.body}">留言内容</p></div>
+          </article>
+        </div>
+        <div class="empty-inline" th:if="${#lists.isEmpty(detail.comments)}">还没有留言，开始这段沟通吧。</div>
+        <form th:if="${canComment}" th:action="@{/tickets/{id}/comments(id=${ticket.ticketNumber})}" th:object="${commentForm}" method="post" class="comment-form">
+          <label class="visually-hidden" for="comment-body">添加留言</label><textarea id="comment-body" th:field="*{body}" rows="3" maxlength="1500" required placeholder="写下补充说明或处理进展…"></textarea><div class="comment-form-foot"><small class="muted">最多 1500 个字符</small><button class="button button-primary button-small" type="submit">发送留言 →</button></div>
+        </form>
+        <div class="closed-note" th:if="${!canComment}">此工单已完成，留言已关闭。</div>
+      </section>
+    </div>
+
+    <aside class="detail-aside">
+      <section class="content-card action-card" th:if="${canUpdate}">
+        <span class="section-kicker">TECHNICIAN ACTION</span><h2>更新维修进度</h2><p>选择下一状态，并补充客户需要了解的信息。</p>
+        <form th:action="@{/technician/tickets/{id}/status(id=${ticket.ticketNumber})}" method="post" class="stack-form">
+          <label for="status">下一状态</label><select id="status" name="status" required><option th:each="status : ${nextStatuses}" th:value="${status.name()}" th:text="${status.label}"></option></select>
+          <label for="statusNote">进度说明 <span class="label-note">可选</span></label><textarea id="statusNote" name="note" rows="3" maxlength="500" placeholder="例如：已更换密封圈，正在测试…"></textarea>
+          <button class="button button-primary button-wide" type="submit">保存进度</button>
+        </form>
+      </section>
+      <section class="content-card action-card resolved-card" th:if="${canClose}">
+        <span class="resolved-icon">✓</span><h2>问题解决了吗？</h2><p>维修人员已标记解决。确认后，工单会归档为已完成。</p>
+        <form th:action="@{/tickets/{id}/confirm(id=${ticket.ticketNumber})}" method="post"><button class="button button-primary button-wide" type="submit">确认维修完成</button></form>
+      </section>
+      <section class="content-card next-card" th:if="${ticket.status.name() == 'CLOSED'}"><span class="resolved-icon">✓</span><h2>工单已完成</h2><p>这张工单的处理记录已保存，你可以随时回来看进度。</p></section>
+      <section class="side-help"><span class="help-icon">?</span><div><b>需要补充信息？</b><p>在工单留言里回复，相关人员会看到你的说明。</p></div></section>
+    </aside>
+  </div>
+</main>
+</body>
+</html>

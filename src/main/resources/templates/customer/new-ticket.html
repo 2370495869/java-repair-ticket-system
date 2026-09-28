@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>提交报修 · 修伴</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="app-page">
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="page-shell narrow-shell">
+  <a class="back-link" th:href="@{/customer/dashboard}">← 返回我的工单</a>
+  <section class="form-page-head"><span class="section-kicker">NEW SERVICE REQUEST</span><h1>说说哪里需要帮忙</h1><p>描述得越清楚，维修人员越容易提前做好准备。</p></section>
+  <form th:action="@{/customer/tickets}" th:object="${form}" method="post" class="content-card request-form">
+    <div class="form-section-title"><span class="form-section-number">01</span><div><h2>问题描述</h2><p>告诉我们报修内容和问题位置。</p></div></div>
+    <label for="title">问题标题</label>
+    <input id="title" th:field="*{title}" maxlength="120" required placeholder="例如：厨房水槽下方持续漏水">
+    <small class="field-error" th:errors="*{title}"></small>
+    <label for="category">报修类型</label>
+    <select id="category" th:field="*{category}" required><option value="">请选择类型</option><option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option></select>
+    <small class="field-error" th:errors="*{category}"></small>
+    <label for="description">问题详情</label>
+    <textarea id="description" th:field="*{description}" rows="5" maxlength="1800" required placeholder="什么时候发现的？目前是什么情况？"></textarea>
+    <small class="field-error" th:errors="*{description}"></small>
+
+    <div class="form-section-title form-section-spaced"><span class="form-section-number">02</span><div><h2>上门联系信息</h2><p>仅工单相关的客户、客服和维修人员可查看。</p></div></div>
+    <label for="contactName">现场联系人</label>
+    <input id="contactName" th:field="*{contactName}" maxlength="80" required placeholder="联系人姓名">
+    <small class="field-error" th:errors="*{contactName}"></small>
+    <div class="field-row">
+      <div><label for="contactPhone">联系电话</label><input id="contactPhone" th:field="*{contactPhone}" type="tel" inputmode="numeric" maxlength="11" required placeholder="11 位手机号"><small class="field-error" th:errors="*{contactPhone}"></small></div>
+      <div><label for="serviceAddress">维修地址</label><input id="serviceAddress" th:field="*{serviceAddress}" maxlength="300" required placeholder="楼栋、单元和房间号"><small class="field-error" th:errors="*{serviceAddress}"></small></div>
+    </div>
+    <div class="form-actions"><a class="button button-quiet" th:href="@{/customer/dashboard}">取消</a><button class="button button-primary" type="submit">提交报修 <span aria-hidden="true">→</span></button></div>
+  </form>
+  <p class="page-note">提交后，客服会分派维修人员。你的联系电话和详细地址不会公开展示。</p>
+</main>
+</body>
+</html>

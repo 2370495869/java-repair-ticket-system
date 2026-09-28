@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登录 · 修伴报修工单</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="auth-page">
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="auth-shell">
+  <section class="auth-story">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> COMMUNITY CARE · SERVICE DESK</div>
+    <h1>让每一次<br><span>报修都有回音。</span></h1>
+    <p class="story-copy">从提交问题到师傅上门，进度、沟通和处理记录都在同一张工单里。</p>
+    <div class="story-steps">
+      <div><span class="step-index">01</span><span><b>描述问题</b><small>清楚记录现场情况</small></span></div>
+      <div><span class="step-index">02</span><span><b>安排维修</b><small>客服分派合适的师傅</small></span></div>
+      <div><span class="step-index">03</span><span><b>跟进进度</b><small>每一步都有记录可查</small></span></div>
+    </div>
+    <div class="story-foot"><span class="pulse"></span>工单信息仅对相关人员开放</div>
+  </section>
+  <section class="auth-form-wrap">
+    <div class="auth-form-card">
+      <div class="form-kicker">欢迎回来</div>
+      <h2>登录你的工作台</h2>
+      <p class="muted">使用注册邮箱继续处理报修事项。</p>
+      <div class="alert alert-success" th:if="${registrationComplete}">账号已创建，现在可以登录。</div>
+      <div class="alert alert-error" th:if="${param.error}">邮箱或密码不正确，请重试。</div>
+      <div class="alert alert-success" th:if="${param.logout}">你已安全退出。</div>
+      <form th:action="@{/login}" method="post" class="stack-form">
+        <label for="email">邮箱</label>
+        <input id="email" name="email" type="email" autocomplete="username" maxlength="190" required placeholder="name@example.com">
+        <label for="password">密码</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="button button-primary button-wide" type="submit">登录 <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="auth-switch">还没有账号？ <a th:href="@{/register}">创建客户账号</a></p>
+      <div class="demo-hint"><span aria-hidden="true">✦</span><span>本机演示启动时会生成客户、客服和维修人员账号；临时密码仅显示在启动控制台。</span></div>
+    </div>
+    <div class="auth-caption">修伴 · 把报修这件小事，认真办好。</div>
+  </section>
+</main>
+</body>
+</html>

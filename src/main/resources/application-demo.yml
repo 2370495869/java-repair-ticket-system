@@ -1,0 +1,3 @@
+repair:
+  demo:
+    enabled: ${REPAIR_DEMO_ENABLED:true}

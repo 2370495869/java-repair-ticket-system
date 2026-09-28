@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="topbar" th:fragment="header">
+  <a class="brand" th:href="@{/}" aria-label="修伴工单首页">
+    <span class="brand-mark" aria-hidden="true">修</span>
+    <span>修伴 <small>报修工单</small></span>
+  </a>
+  <nav class="topnav" aria-label="主导航">
+    <a th:if="${currentUser != null and currentUser.role.name() == 'CUSTOMER'}" th:href="@{/customer/dashboard}">我的工单</a>
+    <a th:if="${currentUser != null and currentUser.role.name() == 'SUPPORT'}" th:href="@{/support/queue}">客服队列</a>
+    <a th:if="${currentUser != null and currentUser.role.name() == 'TECHNICIAN'}" th:href="@{/technician/jobs}">维修工作台</a>
+  </nav>
+  <div class="topbar-actions" th:if="${currentUser != null}">
+    <span class="user-chip"><span class="user-dot"></span><span th:text="${currentUser.fullName}">用户</span></span>
+    <form th:action="@{/logout}" method="post">
+      <button class="button button-quiet button-small" type="submit">退出</button>
+    </form>
+  </div>
+  <div class="topbar-actions" th:if="${currentUser == null}">
+    <a class="button button-quiet button-small" th:href="@{/login}">登录</a>
+    <a class="button button-primary button-small" th:href="@{/register}">注册账号</a>
+  </div>
+</header>
+</body>
+</html>
