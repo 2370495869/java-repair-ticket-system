@@ -1,5 +1,10 @@
 # 修伴 · 在线报修工单平台
 
+[![Build and test](https://github.com/2370495869/java-repair-ticket-system/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/2370495869/java-repair-ticket-system/actions/workflows/build.yml)
+[![CodeQL security analysis](https://github.com/2370495869/java-repair-ticket-system/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/2370495869/java-repair-ticket-system/actions/workflows/codeql.yml)
+
+**English overview:** A Chinese-language repair-ticket web app built with Java 21 and Spring Boot. Customers submit and track tickets, support staff assign technicians, and technicians record progress; comments and status history preserve the service trail. Run it locally with file-backed H2 or use Docker Compose with PostgreSQL. The project is intended for local demonstration and has no hosted public instance.
+
 一个可独立运行的中文 Spring Boot Web 项目，用来展示从客户报修、客服分派、维修处理到客户确认完成的完整工单流程。项目包含账号与角色权限、工单评论、不可变更的状态历史、联系方式按角色展示、数据库迁移、容器配置和 CI 安全分析。
 
 > 面向本地演示与 GitHub 展示。当前没有托管的公网实例；不要向演示环境提交真实住址、电话或其他敏感信息。
